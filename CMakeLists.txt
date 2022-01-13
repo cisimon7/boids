@@ -1,15 +1,18 @@
-cmake_minimum_required(VERSION 3.18)
+cmake_minimum_required(VERSION 3.21)
 project(boids)
 
 if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif ()
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Ofast")
 
 set(INSTALL_BIN_DIR ${PROJECT_SOURCE_DIR}/bin)
 set(INSTALL_LIB_DIR ${PROJECT_SOURCE_DIR}/lib)
+
+set(SFML_DIR ${PROJECT_SOURCE_DIR}/dependencies/SFML)
+set(PYBIND_DIR ${PROJECT_SOURCE_DIR}/dependencies/pybind11)
 
 set(LIB_HEADERS
         src/Vector2D.h
@@ -25,17 +28,26 @@ set(LIB_SOURCES
         src/Simulation.cpp
         src/KDTree.cpp)
 
-find_package(SFML COMPONENTS graphics window system REQUIRED)
+#[[find_package(SFML COMPONENTS graphics window system REQUIRED)
 find_package(pybind11 REQUIRED)
-find_package(OpenMP 4.5)
+]]
+
+
+add_subdirectory(${SFML_DIR})
+add_subdirectory(${PYBIND_DIR})
 
 add_library(boids ${LIB_SOURCES} ${LIB_HEADERS})
 
-if (OpenMP_CXX_FOUND)
+#[[if (OpenMP_CXX_FOUND)
     target_link_libraries(boids OpenMP::OpenMP_CXX sfml-graphics sfml-window sfml-system)
 else()
     target_link_libraries(boids sfml-graphics sfml-window sfml-system)
-endif ()
+endif ()]]
+
+include_directories(/usr/local/opt/homebrew/Cellar/libomp/include)
+target_include_directories(${PROJECT_NAME} PUBLIC ${SFML_DIR}/include)
+target_link_directories(${PROJECT_NAME} PRIVATE ${SFML_DIR}/src)
+target_link_libraries(${PROJECT_NAME} pybind11::embed sfml-graphics sfml-window sfml-system)
 
 add_executable(simulate src/main.cpp src/cxxopts.hpp)
 target_link_libraries(simulate boids)
@@ -47,3 +59,12 @@ install(TARGETS simulate DESTINATION ${INSTALL_BIN_DIR})
 install(TARGETS pyboids
         COMPONENT python
         LIBRARY DESTINATION ${INSTALL_LIB_DIR})
+
+#-DOpenMP_CXX_FLAGS="-Xpreprocessor -fopenmp -I/usr/local/opt/homebrew/Cellar/libomp/include" -DOpenMP_CXX_LIB_NAMES="omp" -DOpenMP_omp_LIBRARY=/usr/local/opt/homebrew/Cellar/libomp/lib/libomp.dylib
+
+#[[
+-DOpenMP_CXX_FLAGS="-Xpreprocessor -fopenmp -I/usr/local/opt/homebrew/Cellar/libomp/include"
+-DOpenMP_CXX_LIB_NAMES="omp"
+-DOpenMP_omp_LIBRARY=/usr/local/opt/homebrew/Cellar/libomp/lib/libomp.dylib]]
+
+#-DOpenMP_CXX_FLAGS="-Xpreprocessor -fopenmp -I/usr/local/opt/libomp/include" -DOpenMP_CXX_LIB_NAMES="omp" -DOpenMP_omp_LIBRARY=/usr/local/opt/libomp/lib/libomp.dylib

@@ -3,7 +3,7 @@
 //
 
 #include <random>
-#include <omp.h>
+//#include <omp.h>
 #include "Simulation.h"
 
 
@@ -25,7 +25,8 @@ Simulation::Simulation(int window_width, int window_height, float boid_size, flo
     this->noise_scale = noise_scale;
     this->fullscreen = fullscreen;
     this->light_scheme = light_scheme;
-    this->num_threads = num_threads < 0 ? omp_get_max_threads() : num_threads;
+//    this->num_threads = num_threads < 0 ? omp_get_max_threads() : num_threads;
+    this->num_threads = num_threads;
 }
 
 Simulation::~Simulation() = default;
@@ -61,7 +62,7 @@ void Simulation::add_boid(float x, float y, bool is_predator, bool with_shape) {
     if (with_shape) {
         sf::CircleShape shape(is_predator ? boid_size * 1.3f : boid_size, 3);
 
-        shape.setPosition(x, y);
+        shape.setPosition(sf::Vector2f(x, y));
         shape.setFillColor(is_predator ? sf::Color::Red : (light_scheme ? sf::Color::Black : sf::Color::Green));
         shape.setOutlineColor(light_scheme ? sf::Color::White : sf::Color::Black);
         shape.setOutlineThickness(1);
@@ -78,7 +79,7 @@ void Simulation::render() {
 
     for (int i = 0; i < shapes.size(); ++i) {
         Boid b = flock[i];
-        shapes[i].setPosition(b.position.x, b.position.y);
+        shapes[i].setPosition(sf::Vector2f(b.position.x, b.position.y));
         shapes[i].setRotation(b.angle());
         window.draw(shapes[i]);
     }
