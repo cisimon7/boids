@@ -8,9 +8,10 @@
 #include <vector>
 #include "Boid.h"
 
+/* Total number of boids on display make the boid in a KDTree structure. */
 class Flock {
 private:
-    std::vector<Boid> boids;
+    std::vector<Boid> boids; /* All boids. */
 
 public:
 
@@ -20,8 +21,10 @@ public:
 
     ~Flock();
 
+    /* Returns boid at depth i of the KDTree. */
     Boid operator[](int i) const;
 
+    /* Inserts new boid into the KDTree. */
     void add(const Boid &boid);
 
     void clear();

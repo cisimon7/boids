@@ -3,7 +3,7 @@
 //
 
 #include <random>
-//#include <omp.h>
+#include <omp.h>
 #include "Simulation.h"
 
 
@@ -25,7 +25,7 @@ Simulation::Simulation(int window_width, int window_height, float boid_size, flo
     this->noise_scale = noise_scale;
     this->fullscreen = fullscreen;
     this->light_scheme = light_scheme;
-//    this->num_threads = num_threads < 0 ? omp_get_max_threads() : num_threads;
+    this->num_threads = num_threads < 0 ? omp_get_max_threads() : num_threads;
     this->num_threads = num_threads;
 }
 
