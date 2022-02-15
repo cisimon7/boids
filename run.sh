@@ -1,0 +1,1 @@
+./cmake-build-debug/simulate --light_scheme true

@@ -132,6 +132,11 @@ float Vector2D::distance(const Vector2D &other) const {
     return sqrt(dx * dx + dy * dy);
 }
 
+/*
+ * The distance between two points in 2D, but that these points are in a universe that “wraps around” like old video
+ * games – leaving the screen on the right, left, top or bottom side makes you re-appear on the opposite edge.
+ *
+ * https://blog.demofox.org/2017/10/01/calculating-the-distance-between-points-in-wrap-around-toroidal-space/ */
 float Vector2D::toroidal_distance2(const Vector2D &other, float width, float height) const {
     float dx = x - other.x;
     float dy = y - other.y;

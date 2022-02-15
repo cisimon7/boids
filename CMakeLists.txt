@@ -28,21 +28,10 @@ set(LIB_SOURCES
         src/Simulation.cpp
         src/KDTree.cpp)
 
-#[[find_package(SFML COMPONENTS graphics window system REQUIRED)
-find_package(pybind11 REQUIRED)
-]]
-
-
 add_subdirectory(${SFML_DIR})
 add_subdirectory(${PYBIND_DIR})
 
 add_library(boids ${LIB_SOURCES} ${LIB_HEADERS})
-
-#[[if (OpenMP_CXX_FOUND)
-    target_link_libraries(boids OpenMP::OpenMP_CXX sfml-graphics sfml-window sfml-system)
-else()
-    target_link_libraries(boids sfml-graphics sfml-window sfml-system)
-endif ()]]
 
 include_directories(/usr/local/opt/homebrew/Cellar/libomp/include)
 target_include_directories(${PROJECT_NAME} PUBLIC ${SFML_DIR}/include)
@@ -60,11 +49,10 @@ install(TARGETS pyboids
         COMPONENT python
         LIBRARY DESTINATION ${INSTALL_LIB_DIR})
 
-#-DOpenMP_CXX_FLAGS="-Xpreprocessor -fopenmp -I/usr/local/opt/homebrew/Cellar/libomp/include" -DOpenMP_CXX_LIB_NAMES="omp" -DOpenMP_omp_LIBRARY=/usr/local/opt/homebrew/Cellar/libomp/lib/libomp.dylib
+# YOU MAY NEED TO INCLUDE THIS FLAGS tO BE ABLE TO RUN PROGRAM DEPENDING ON SYSTEM
 
 #[[
 -DOpenMP_CXX_FLAGS="-Xpreprocessor -fopenmp -I/usr/local/opt/homebrew/Cellar/libomp/include"
 -DOpenMP_CXX_LIB_NAMES="omp"
--DOpenMP_omp_LIBRARY=/usr/local/opt/homebrew/Cellar/libomp/lib/libomp.dylib]]
-
-#-DOpenMP_CXX_FLAGS="-Xpreprocessor -fopenmp -I/usr/local/opt/libomp/include" -DOpenMP_CXX_LIB_NAMES="omp" -DOpenMP_omp_LIBRARY=/usr/local/opt/libomp/lib/libomp.dylib
+-DOpenMP_omp_LIBRARY=/usr/local/opt/homebrew/Cellar/libomp/lib/libomp.dylib
+]]
