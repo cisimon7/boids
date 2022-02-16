@@ -29,19 +29,3 @@ iterating over all boids and incurring an O(n<sup>2</sup>) cost.
 The implementation also uses OpenMP for some simple parallelization that leads to further speedups (and therefore the
 ability to simulate a larger number of boids).
 
-## Usage
-
-This project depends on [SFML][2], which must be installed first. On MacOS, this can be done with `brew install sfml`.
-
-After installing SFML, the executable for the program can be built and installed by running the script
-`build_and_install.sh`. This program can then be run with:
-```shell script
-./bin/simulate
-```
-
-Almost all aspects of the simulation and the boids' behavior can be customized from the command line. Pass the
-`--help` flag to see available options.
-
-The simulation is also interactive. Left-clicking on the screen will add a new boid, and right-clicking will add a new
-predator boid (normal boids will try to avoid these). Pressing `C` on the keyboard will clear all the Boids on the
-screen, and pressing `Q` will end the simulation and quit the program.

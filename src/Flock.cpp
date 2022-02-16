@@ -29,6 +29,7 @@ void Flock::update(float window_width, float window_height, int num_threads) {
     KDTree tree(window_width, window_height);
     for (Boid &b: boids) tree.insert(&b);
 
+    /* An array of boid arrays representing the boids close to a particular boid. */
     std::vector<Boid *> search_results[boids.size()];
 
 #pragma omp parallel for schedule(dynamic) num_threads(num_threads) if (num_threads > 1)
@@ -39,6 +40,7 @@ void Flock::update(float window_width, float window_height, int num_threads) {
 
 #pragma omp parallel for schedule(dynamic) num_threads(num_threads) if (num_threads > 1)
     for (int i = 0; i < boids.size(); ++i)
+        /* Takes the array of boids within its radius and makes decision on how it moves next step*/
         boids[i].update(search_results[i]);
 }
 

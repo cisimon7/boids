@@ -34,14 +34,17 @@ add_subdirectory(${PYBIND_DIR})
 
 add_library(boids ${LIB_SOURCES} ${LIB_HEADERS})
 
-include_directories(/usr/local/opt/homebrew/Cellar/libomp/include)
+#include_directories(/usr/local/opt/homebrew/Cellar/libomp/include)
 target_include_directories(${PROJECT_NAME} PUBLIC ${SFML_DIR}/include ${OPEN_MP_DIR}/include)
 target_link_directories(${PROJECT_NAME} PRIVATE ${SFML_DIR}/src)
 target_link_libraries(${PROJECT_NAME} pybind11::embed sfml-graphics sfml-window sfml-system)
 
-# You may need to include the [${OPEN_MP_DIR}/lib/libomp.dylib] in usr/local/lib
-set(OPEN_MP_LIB "${OPEN_MP_DIR}/lib/libomp.dylib")
-target_link_libraries(${PROJECT_NAME} ${OPEN_MP_LIB})
+# To tell the compiler that you want to use OpenMP
+SET(OPENMP_COMPILE_FLAGS "-Xpreprocessor -fopenmp")
+#SET(OPENMP_LINK_FLAGS    "-fopenmp=libomp")
+
+SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${OPENMP_COMPILE_FLAGS}")
+SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} ${OPENMP_LINK_FLAGS}")
 
 add_executable(simulate src/main.cpp src/cxxopts.hpp)
 target_link_libraries(simulate boids)
@@ -53,6 +56,10 @@ install(TARGETS simulate DESTINATION ${INSTALL_BIN_DIR})
 install(TARGETS pyboids
         COMPONENT python
         LIBRARY DESTINATION ${INSTALL_LIB_DIR})
+
+# You may need to include the [${OPEN_MP_DIR}/lib/libomp.dylib] in usr/local/lib
+set(OPEN_MP_LIB "${OPEN_MP_DIR}/lib/libomp.dylib") # Make sure to use the omp library for your computer architecture
+target_link_libraries(${PROJECT_NAME} ${OPEN_MP_LIB})
 
 
 # YOU MAY NEED TO INCLUDE THIS FLAGS tO BE ABLE TO RUN PROGRAM DEPENDING ON SYSTEM
